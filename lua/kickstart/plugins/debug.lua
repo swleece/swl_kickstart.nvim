@@ -25,6 +25,9 @@ return {
     'leoluz/nvim-dap-go',
     'suketa/nvim-dap-ruby',
     'mfussenegger/nvim-dap-python',
+
+    -- Virtual text for showing variable values
+    'theHamsta/nvim-dap-virtual-text',
   },
   config = function()
     local dap = require 'dap'
@@ -85,6 +88,8 @@ return {
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
+
+    require('nvim-dap-virtual-text').setup()
 
     -- Install golang specific config
     require('dap-go').setup {

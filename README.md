@@ -20,7 +20,7 @@ debugpy/bin/python -m pip install debugpy
 
 - ruby debugging with ruby LSP
 - investigate find and replace within file, within project
-- commenting selection
+- look into inccommand https://youtu.be/kJVqxFnhIuw?t=587
 
 
 ### explore:
