@@ -19,6 +19,9 @@ debugpy/bin/python -m pip install debugpy
 ## TODO / explore
 
 - ruby debugging with ruby LSP
+- improve python debugging
+  - how to read from launch.json for launch debugger command?
+  - https://github.com/simrat39/rust-tools.nvim/wiki/Use-with-dap.ext.vscode-launch.json
 - investigate find and replace within file, within project
 - look into inccommand https://youtu.be/kJVqxFnhIuw?t=587
 
