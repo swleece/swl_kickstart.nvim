@@ -14,6 +14,9 @@ vim.opt.updatetime = 250 -- previously, 50
 -- NOTE: You should make sure your terminal supports this
 vim.opt.termguicolors = true
 
+-- Set highlight on search, but clear on pressing <Esc> in normal mode
+vim.opt.hlsearch = true
+
 -- Set Copilot related settings
 -- vim.g.copilot_no_tab_map = true
 -- vim.g.copilot_assume_mapped = true
