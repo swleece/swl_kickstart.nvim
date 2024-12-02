@@ -279,6 +279,11 @@ require('lazy').setup({
         ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
         ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
       }
+
+      require('which-key').register({
+        ['\\'] = { 'toggle Neotree' },
+      }, { mode = 'n' })
+
       -- visual mode
       require('which-key').register({
         ['<leader>h'] = { 'Git [H]unk' },

@@ -1,5 +1,7 @@
 # swl_kickstart.nvim
 
+- markdown.nvim, Markdown Preview (note that markdown preview conflicts with obsidian nvim)
+
 Instructions unique to my dotfiles:
 - create a symlink in $HOME/.config/
 `ln -s /Users/<username>/src/swl_kickstart.nvim /Users/<username>/.config/`
@@ -29,7 +31,13 @@ debugpy/bin/python -m pip install debugpy
 ### explore:
 
 - neotest - test run viewer
+- mini.nvim
 
+- code completion: copilot.vim from tpope - ghost text instead of cmp
+- chat with code: copilotchat.nvim - sidebar chat
+  - pulls in errors from syntax errors, in line errors
+- avante.nvim - a bit more clunky that copilot chat
+- gp.nvim, gen.nvim, model.nvim
 
 
 ### Introduction
