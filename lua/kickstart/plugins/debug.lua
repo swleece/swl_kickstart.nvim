@@ -155,8 +155,9 @@ return {
     require('dap-ruby').setup()
     require('dap-ruby').setup()
 
-    -- require('dap-python').setup '/Users/stephenleece/src/flask_stephenleece_app/venv/bin/python'
+    require('dap-python').setup '/Users/stephenleece/src/flask_stephenleece_app/venv/bin/python'
     require('dap-python').setup '~/.virtualenvs/debugpy/bin/python'
+    require('dap-python').setup '/Users/stephenleece/.asdf/shims/python3'
 
     -- require('dap.ext.vscode').json_decode(nil, {})
   end,

@@ -1,5 +1,5 @@
 -- Commentary
 -- use gc and gcc to comment out lines
 return {
-  'tpope/vim-commentary.vim',
+  'tpope/vim-commentary',
 }
