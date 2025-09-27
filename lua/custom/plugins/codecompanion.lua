@@ -7,5 +7,7 @@ return {
     'nvim-telescope/telescope.nvim', -- Optional: For using slash commands
     { 'stevearc/dressing.nvim', opts = {} }, -- Optional: Improves the default Neovim UI
   },
-  config = true,
+  config = function()
+    require('custom.options').setup_codecompanion()
+  end,
 }
