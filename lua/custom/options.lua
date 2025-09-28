@@ -47,13 +47,15 @@ function M.setup_codecompanion()
       },
     },
     adapters = {
-      anthropic = function()
-        return require('codecompanion.adapters').extend('anthropic', {
-          env = {
-            api_key = vim.fn.environ()['ANTHROPIC_API_KEY'],
-          },
-        })
-      end,
+      http = {
+        anthropic = function()
+          return require('codecompanion.adapters').extend('anthropic', {
+            env = {
+              api_key = vim.fn.environ()['ANTHROPIC_API_KEY'],
+            },
+          })
+        end,
+      },
     },
   }
 end
