@@ -10,20 +10,22 @@ function M.setup()
   vim.opt.colorcolumn = '80'
   vim.opt.equalalways = true -- equal splits automatically
   vim.opt.wrap = true
-  
+  vim.opt.autoread = true
+  vim.opt.autowriteall = true
+
   -- Custom additions/overrides to upstream kickstart
   vim.opt.relativenumber = true -- Enable relative line numbers (upstream has this disabled)
-  vim.opt.signcolumn = 'yes:1'  -- Keep sign column with width of 1 (upstream uses 'yes')
-  
+  vim.opt.signcolumn = 'yes:1' -- Keep sign column with width of 1 (upstream uses 'yes')
+
   -- Decrease update time
   vim.opt.updatetime = 250 -- previously, 50
-  
+
   -- NOTE: You should make sure your terminal supports this
   vim.opt.termguicolors = true
-  
+
   -- Set highlight on search, but clear on pressing <Esc> in normal mode
   vim.opt.hlsearch = true
-  
+
   -- Set Copilot related settings (commented out - enable if using Copilot)
   -- vim.g.copilot_no_tab_map = true
   -- vim.g.copilot_assume_mapped = true

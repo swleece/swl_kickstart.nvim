@@ -93,4 +93,11 @@ end
 -- No longer needed - blink.cmp handles capabilities directly
 -- M.get_lsp_capabilities = function() end
 
+-- Override nvim-lint to disable problematic linters
+M.lint_override = function()
+  local lint = require 'lint'
+  -- Disable markdown linting to avoid ENOENT errors
+  lint.linters_by_ft.markdown = nil
+end
+
 return M
