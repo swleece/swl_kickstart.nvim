@@ -1,12 +1,7 @@
-return {
- "thgrund/tidal.nvim",
- opts = {
-  -- Your configuration here
-  -- See configuration section for defaults
- },
- -- Recommended: Install TreeSitter parsers for Haskell and SuperCollider
- dependencies = {
-  "nvim-treesitter/nvim-treesitter",
-  opts = { ensure_installed = { "haskell", "supercollider" } },
- },
-}
+-- TidalCycles live-coding support.
+-- The Haskell and SuperCollider treesitter parsers it wants are installed
+-- automatically by upstream's treesitter auto-install when a .hs / .scd (or
+-- tidal) buffer is opened, so no explicit ensure_installed is needed here.
+vim.pack.add { 'https://github.com/thgrund/tidal.nvim' }
+
+require('tidal').setup {}

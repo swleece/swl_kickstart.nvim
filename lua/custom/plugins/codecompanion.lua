@@ -1,13 +1,11 @@
-return {
-  'olimorris/codecompanion.nvim',
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    'nvim-treesitter/nvim-treesitter',
-    'hrsh7th/nvim-cmp', -- Optional: For using slash commands and variables in the chat buffer
-    'nvim-telescope/telescope.nvim', -- Optional: For using slash commands
-    { 'stevearc/dressing.nvim', opts = {} }, -- Optional: Improves the default Neovim UI
-  },
-  config = function()
-    require('custom.options').setup_codecompanion()
-  end,
+-- CodeCompanion (AI chat / inline).
+-- plenary, nvim-treesitter and telescope are already installed by upstream
+-- init.lua, so we only add codecompanion + dressing here. nvim-cmp is skipped
+-- (this config uses blink.cmp).
+vim.pack.add {
+  'https://github.com/olimorris/codecompanion.nvim',
+  'https://github.com/stevearc/dressing.nvim',
 }
+
+require('dressing').setup {}
+require('custom.options').setup_codecompanion()

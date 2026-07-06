@@ -12,7 +12,7 @@ This is a Neovim configuration based on kickstart.nvim, customized with personal
 ```bash
 nvim +checkhealth
 ```
-Verifies Neovim version (requires 0.10+), checks for required executables (git, make, unzip, rg).
+Verifies Neovim version (requires 0.12+ for `vim.pack`), checks for required executables (git, make, unzip, rg).
 
 ### Launch
 ```bash
@@ -20,9 +20,11 @@ kv  # Uses NVIM_APPNAME to launch this specific config
 ```
 
 ### Plugin Management
-- `:Lazy` - Opens the Lazy plugin manager UI
-- `:Lazy sync` - Update all plugins
-- `:Lazy health` - Check plugin health
+Uses `vim.pack`, Neovim's built-in plugin manager (no third-party bootstrap).
+- `:lua vim.pack.update()` - Update all plugins
+- `:lua vim.pack.update(nil, { offline = true })` - Inspect plugin state / pending updates without fetching
+- Plugins are added imperatively with `vim.pack.add { 'https://github.com/owner/repo' }` followed by the plugin's `.setup()` call.
+- Reproducible versions are tracked in `nvim-pack-lock.json` (see `:help vim.pack-lockfile`).
 
 ### Core Keybindings
 - Leader key: `<space>`
@@ -35,41 +37,47 @@ kv  # Uses NVIM_APPNAME to launch this specific config
 ## Architecture
 
 ### Directory Structure
-- `init.lua` - Main entry point, streamlined to load modules and bootstrap lazy.nvim
+- `init.lua` - Main entry point. Kept **byte-identical to upstream** except for a small,
+  clearly-marked set of loader lines (see Reconciliation Strategy).
 - `lua/custom/` - Personal customizations (isolated from upstream)
-  - `init.lua` - Custom initialization module
-  - `keymaps.lua` - Custom key mappings
-  - `options.lua` - Neovim options
-  - `overrides.lua` - Plugin overrides for upstream compatibility
-  - `plugins/` - Additional plugin configurations (codecompanion, codeium, harpoon, oil, etc.)
+  - `init.lua` - Custom init module; `require('custom').setup()` loads options + keymaps
+  - `keymaps.lua` - Custom key mappings (also defines the `LiveGrepGitRoot` command)
+  - `options.lua` - Neovim option overrides/additions + `setup_codecompanion()`
+  - `plugins/` - Additional plugins, each an imperative `vim.pack` module
+    (codecompanion, codeium, harpoon, oil, diffview, tidal, neotree, lsp, dap-extra, ...)
 - `lua/kickstart/` - Original kickstart modules (synced with upstream)
-  - `plugins/` - Kickstart plugin configurations (debug, linting, autopairs, neo-tree, gitsigns)
+  - `plugins/` - Kickstart plugin configurations (debug, lint, autopairs, neo-tree, gitsigns)
 
 ### Plugin System
-Uses `lazy.nvim` as the plugin manager. Key plugins include:
-- LSP: `nvim-lspconfig` with Mason for automatic server installation
+Uses `vim.pack` (built into Neovim 0.12+) as the plugin manager. Key plugins include:
+- LSP: `nvim-lspconfig` with Mason for automatic server installation (pyright enabled via `lua/custom/plugins/lsp.lua`)
 - Completion: `blink.cmp` (aligned with upstream kickstart.nvim)
+- Icons: `mini.icons` (mocks `nvim-web-devicons` for compatibility)
 - File Management: Oil.nvim, Neo-tree
-- Git: vim-fugitive, gitsigns, vim-rhubarb
-- Debugging: nvim-dap with language-specific adapters (Python, Go, Ruby)
+- Git: vim-fugitive, gitsigns, vim-rhubarb, diffview
+- Debugging: nvim-dap with language-specific adapters (Python, Go, Ruby) + virtual text
 
 ### Upstream Compatibility and Reconciliation Strategy
-This configuration maintains compatibility with upstream kickstart.nvim through careful separation:
-- **Custom code isolation**: All personal customizations live in `lua/custom/`
-- **Additional Plugins**: Custom plugins in `lua/custom/plugins/` not present in upstream
-- **Key Mappings**: Personal keybindings preserved in `lua/custom/keymaps.lua`
-- **Options**: Custom Neovim options in `lua/custom/options.lua`
-- **Modular overrides**: The `lua/custom/overrides.lua` file handles plugin-specific customizations when needed
-- **Upstream sync**: The `lua/kickstart/` directory stays aligned with upstream changes
-- **Clean init.lua**: The main init file is kept minimal and closely aligned with upstream, delegating custom logic to modules
+The core invariant: **`init.lua` and `lua/kickstart/**` stay identical to upstream.** All
+customization lives in `lua/custom/`. The only permitted edits to `init.lua` are a handful of
+loader lines at upstream-stable extension points:
+1. `require('custom').setup()` right after SECTION 2 (loads custom options + keymaps so they
+   override upstream defaults).
+2. Uncommenting the optional `require 'kickstart.plugins.*'` we use (debug, lint, autopairs, gitsigns).
+3. Uncommenting `require 'custom.plugins'` (loads every `lua/custom/plugins/*.lua`).
+
+Everything else — colorscheme (catppuccin), pyright, DAP extras, treesitter languages — is a
+`custom/` file, **never** an inline init.lua edit. Custom plugin files are plain imperative Lua
+(`vim.pack.add` + `.setup()`), loaded last, so they can safely override or extend upstream.
 
 ### Future Merges
-When merging future upstream changes:
-1. Pull upstream changes into a separate branch
-2. Review changes to `init.lua` and adapt them in `lua/custom/` modules if needed
-3. Accept updates to `lua/kickstart/` directory
-4. Test thoroughly before merging to main branch
-5. Update this documentation with any new divergences
+Because the merge-base is now current and init.lua/kickstart are unmodified, syncing is a
+normal merge:
+1. `git fetch upstream && git merge upstream/master`
+2. For any conflict in `init.lua` or `lua/kickstart/**`, take upstream ("theirs") and, if a
+   sanctioned loader line moved, re-apply it.
+3. `lua/custom/**` should not conflict (upstream never touches it).
+4. Run `nvim +checkhealth` and launch to test, then update this doc with any new divergences.
 
 ### Python Debugging Setup
 Requires a virtual environment with debugpy:
@@ -82,7 +90,7 @@ debugpy/bin/python -m pip install debugpy
 
 ## Development Notes
 
-- This config tracks `lazy-lock.json` for reproducible plugin versions
-- Uses vim-sleuth for automatic indentation detection
-- Includes both commentary.vim and mini.comment for code commenting
+- This config tracks `nvim-pack-lock.json` for reproducible plugin versions (`:help vim.pack-lockfile`)
+- Uses `guess-indent.nvim` for automatic indentation detection (upstream default)
+- Uses `vim-commentary` for code commenting (`gc`/`gcc`); mini.comment is intentionally not used
 - Configured for various languages through Mason LSP installer
