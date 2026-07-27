@@ -4,33 +4,21 @@
 local M = {}
 
 function M.setup()
-  -- General options
+  -- NOTE: Only genuine overrides/additions to upstream live here. Options that
+  -- merely duplicate upstream defaults (updatetime=250, termguicolors, hlsearch,
+  -- incsearch) were dropped since upstream (init.lua SECTION 1) already sets them.
+
+  -- Additions upstream does not set
   vim.opt.completeopt = 'menu,menuone,noselect'
-  vim.opt.incsearch = true
   vim.opt.colorcolumn = '80'
   vim.opt.equalalways = true -- equal splits automatically
-  vim.opt.wrap = true
+  vim.opt.wrap = true -- paired with the j/k wrap-aware motions in keymaps
   vim.opt.autoread = true
   vim.opt.autowriteall = true
 
-  -- Custom additions/overrides to upstream kickstart
-  vim.opt.relativenumber = true -- Enable relative line numbers (upstream has this disabled)
-  vim.opt.signcolumn = 'yes:1' -- Keep sign column with width of 1 (upstream uses 'yes')
-
-  -- Decrease update time
-  vim.opt.updatetime = 250 -- previously, 50
-
-  -- NOTE: You should make sure your terminal supports this
-  vim.opt.termguicolors = true
-
-  -- Set highlight on search, but clear on pressing <Esc> in normal mode
-  vim.opt.hlsearch = true
-
-  -- Set Copilot related settings (commented out - enable if using Copilot)
-  -- vim.g.copilot_no_tab_map = true
-  -- vim.g.copilot_assume_mapped = true
-  -- vim.g.copilot_tab_fallback = ''
-  -- vim.api.nvim_set_keymap('i', '<C-g>', 'copilot#Accept("<CR>")', { silent = true, expr = true })
+  -- Overrides of upstream defaults
+  vim.opt.relativenumber = true -- upstream leaves this disabled
+  vim.opt.signcolumn = 'yes:1' -- upstream uses 'yes'
 end
 
 -- Setup CodeCompanion (moved here from options to keep it organized)

@@ -1,30 +1,26 @@
--- Unless you are still migrating, remove the deprecated commands from v1.x
-vim.cmd [[ let g:neo_tree_remove_legacy_commands = 1 ]]
+-- Neo-tree file explorer.
+-- plenary is already installed by upstream init.lua; we add neo-tree + nui here.
+-- Icons come from mini.icons (mocked as nvim-web-devicons in init.lua).
+vim.g.neo_tree_remove_legacy_commands = 1
 
-return {
-  'nvim-neo-tree/neo-tree.nvim',
-  version = '*',
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-    'MunifTanjim/nui.nvim',
-  },
-  cmd = 'Neotree',
-  keys = {
-    { '\\', ':Neotree reveal<CR>', { desc = 'NeoTree reveal' } },
-  },
-  opts = {
-    filesystem = {
-      filtered_items = {
-        visible = true,
-        hide_dotfiles = false,
-        hide_gitignored = true,
-      },
-      window = {
-        mappings = {
-          ['\\'] = 'close_window',
-        },
+vim.pack.add {
+  'https://github.com/nvim-neo-tree/neo-tree.nvim',
+  'https://github.com/MunifTanjim/nui.nvim',
+}
+
+require('neo-tree').setup {
+  filesystem = {
+    filtered_items = {
+      visible = true,
+      hide_dotfiles = false,
+      hide_gitignored = true,
+    },
+    window = {
+      mappings = {
+        ['\\'] = 'close_window',
       },
     },
   },
 }
+
+vim.keymap.set('n', '\\', '<cmd>Neotree reveal<cr>', { desc = 'NeoTree reveal' })

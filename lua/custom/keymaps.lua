@@ -9,13 +9,32 @@ function M.setup()
   -- Map for copy/yank to clipboard
   vim.keymap.set('v', '<leader>cp', '"+y')
 
-  -- Diagnostic keymaps
-  vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+  -- Diagnostic keymaps (vim.diagnostic.goto_prev/next are deprecated -> jump)
+  vim.keymap.set('n', '[d', function()
+    vim.diagnostic.jump { count = -1, float = true }
+  end, { desc = 'Go to previous [D]iagnostic message' })
+  vim.keymap.set('n', ']d', function()
+    vim.diagnostic.jump { count = 1, float = true }
+  end, { desc = 'Go to next [D]iagnostic message' })
   vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-  vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+  -- NOTE: <leader>q (setloclist) is defined by upstream init.lua, so not repeated here.
 
-  vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
+  -- Grep on the git root. Upstream removed the LiveGrepGitRoot command, so we
+  -- re-define it here. The command body runs lazily, after telescope loads.
+  local function find_git_root()
+    local current_file = vim.api.nvim_buf_get_name(0)
+    local current_dir = current_file == '' and vim.fn.getcwd() or vim.fn.fnamemodify(current_file, ':h')
+    local git_root = vim.fn.systemlist('git -C ' .. vim.fn.escape(current_dir, ' ') .. ' rev-parse --show-toplevel')[1]
+    if vim.v.shell_error ~= 0 then
+      vim.notify('Not a git repository. Searching in cwd instead.', vim.log.levels.WARN)
+      return vim.fn.getcwd()
+    end
+    return git_root
+  end
+  vim.api.nvim_create_user_command('LiveGrepGitRoot', function()
+    require('telescope.builtin').live_grep { search_dirs = { find_git_root() } }
+  end, { desc = 'Live grep on the git root' })
+  vim.keymap.set('n', '<leader>sG', '<cmd>LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 
   -- General Keymaps
   -- paste and keep current paste text after pasting over a selection

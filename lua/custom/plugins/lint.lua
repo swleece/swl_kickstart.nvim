@@ -1,26 +1,10 @@
--- Custom lint configuration to override upstream
--- This disables problematic linters like markdownlint
-return {
-  'mfussenegger/nvim-lint',
-  event = { 'BufReadPre', 'BufNewFile' },
-  config = function()
-    local lint = require 'lint'
-    
-    -- Start with empty linters to avoid ENOENT errors
-    lint.linters_by_ft = {}
-    
-    -- Only enable linters that are known to be available
-    -- Add more as needed when tools are properly installed
-    
-    -- Create autocommand for linting
-    local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
-    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
-      group = lint_augroup,
-      callback = function()
-        if vim.bo.modifiable then
-          lint.try_lint()
-        end
-      end,
-    })
-  end,
-}
+-- Lint override.
+-- Upstream's `kickstart.plugins.lint` (enabled in init.lua) installs nvim-lint
+-- and sets linters_by_ft = { markdown = { 'markdownlint' } }. That errors with
+-- ENOENT unless markdownlint is installed, so we clear the markdown entry here.
+-- This file runs AFTER kickstart.plugins.lint (custom.plugins is required last
+-- in init.lua), so the plugin and its autocmd are already set up.
+local ok, lint = pcall(require, 'lint')
+if ok then
+  lint.linters_by_ft.markdown = nil
+end
